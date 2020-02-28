@@ -2,87 +2,118 @@
 
 @section('content')
 
-    <!-- Bootstrap Boilerplate... -->
-    <div class="container">
-        <div class="col-sm-offset-2 col-sm-8">
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    New Task
-                </div>
 
-                    <div class="panel-body">
-                        <!-- Display Validation Errors -->
-                        @include('common.errors')
 
-                        <!-- New Task Form -->
-                        <form action="/task" method="POST" class="form-horizontal">
-                            @csrf
+                <section class="section">
+                            <div class="container">
+                                <div class="columns center">  
+                                    <div class="column is-4">
+                                        <article class="message is-dark">
+                                            <div class="message-header center">
+                                                <p class="is-size-5 has-text-white">New Task</p>
+                                            </div>
+                                            <div class="message-body">
 
-                            <!-- Task Name -->
-                            <div class="form-group">
-                                <label for="task-name" class="col-sm-3 control-label">Task</label>
+                                                @include('common.errors')
+                                                <form action="/task" method="POST" class="">
+                                                    @csrf
+                                                    <div class="field">                                                        
+                                                        <div class="control">
+                                                            <input class="input" name="name" type="text" placeholder="Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="field">       
+                                                        <div class="control">
+                                                            <textarea class="textarea has-fixed-size" name="description" placeholder="Description" value="{{ old('description') }}"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control center">
+                                                        <input class="button is-dark is-outlined is-rounded" type="submit" value="Add">
+                                                    </div>
 
-                                <div class="col-sm-6">
-                                    <input type="text" name="name" id="task-name" class="form-control" value="{{ old('task') }}">
+                                                </form>
+
+
+                                            </div>
+                                        </article>
+
+                                    </div>
+                                
                                 </div>
                             </div>
+                        </section>
 
-                            <!-- Add Task Button -->
-                            <div class="form-group">
-                                <div class="col-sm-offset-3 col-sm-6">
-                                    <button type="submit" class="btn btn-default">
-                                        <i class="fa fa-btn fa-plus"></i>Add Task
-                                    </button>
-                                </div>
+
+
+
+
+
+
+
+
+     {{-- SHOW TASKS --}}
+     @if (count($tasks) > 0)
+        <section class="section">
+            <div class="container">
+                <div class="columns center">
+                    <div class="column is-full">
+                        <article class="message is-dark">
+                            <div class="message-header center">
+                                <p class="is-size-5 has-text-white">Tasks List</p>
                             </div>
-                        </form>
+                            <div class="message-body">
+                                <div class="columns is-multiline">
+
+                                    @foreach ($tasks as $task)
+                                        <div class="column is-one-quarter">
+                                
+                                                <div class="card">
+                                                    <header class="{{ ($task->description) ? 'card-header' : '' }}">
+                                                        <p class="card-header-title is-centered">
+                                                        {{ $task->name }}
+                                                        </p>
+                                                        
+                                                    </header>
+                                                    @if ($task->description)
+                                                        <div class="card-content">
+                                                            <div class="content has-text-centered"> {{ $task->description }} <br>                              
+                                                        </div>
+                                                    </div>
+                                                    @endif
+                                                    
+                                                    <footer class="center" style="padding-bottom: 10px;">
+                                                         <form action="/task/{{ $task->id }}" method="POST">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            
+                                                            <input class="button is-danger is-outlined is-small is-rounded" type="submit" value="Delete">
+                                                            
+                                                        </form>
+                                                    </footer>
+                                                </div>
+                                        </div>  
+
+                                    @endforeach
+                                
+                      
+
+                            </article>
+
+                        </div>
+
+ 
                     </div>
-                </div>
+            </div>
+        </section> 
+@endif
 
-    
-            <!-- Current Tasks -->
-            @if (count($tasks) > 0)
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Current Tasks
-                    </div>
 
-                    <div class="panel-body">
-                        <table class="table table-striped task-table">
 
-                            <!-- Table Headings -->
-                            <thead>
-                                <th>Task</th>
-                                <th>&nbsp;</th>
-                            </thead>
 
-                            <!-- Table Body -->
-                            <tbody>
-                                @foreach ($tasks as $task)
-                                    <tr>
-                                        <!-- Task Name -->
-                                        <td class="table-text">
-                                            <div>{{ $task->name }}</div>
-                                        </td>
 
-                                        <td>
-                                            <form action="/task/{{ $task->id }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
 
-                                                  <button type="submit" class="btn btn-danger">
-                                                    <i class="fa fa-btn fa-trash"></i>Delete
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            @endif
+
         </div>
     </div>
 @endsection
